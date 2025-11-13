@@ -11,25 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
 
-      - name: Download JUnit and Run Tests
-        run: |
-          # 建立 lib 目錄並下載 JUnit 5 Console 版本
-          mkdir -p libs
-          curl -L -o libs/junit-platform-console-standalone.jar \
-            https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
+    - name: 建立 lib 目錄並下載 JUnit Console
+      run: |
+        mkdir -p lib
+        curl -L -o lib/junit.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.0/junit-platform-console-standalone-1.10.0.jar
 
-          # 編譯所有 .java 檔案
-          javac -cp "libs/junit-platform-console-standalone.jar:." *.java
+    - name: Compile code
+      run: |
+        mkdir -p out
+        javac -cp lib/junit.jar -d out $(find src test -name "*.java")
 
-          # 執行所有測試
-          java -jar libs/junit-platform-console-standalone.jar \
-            -cp "libs/junit-platform-console-standalone.jar:." --scan-classpath
+    - name: Run JUnit tests
+      run: |
+        java -jar lib/junit.jar -cp out --scan-classpath
