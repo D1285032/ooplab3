@@ -1,30 +1,32 @@
 name: junit
 
 on:
-    push:
-        branches:["main"]
-    pull_request:
-        branches:["main"]
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-    test:
-        runs-on:ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
+
     steps:
-        -name:Checkout code
-        uses:actions/checkout@4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-        -name:Set up JDK
-        uses:action/setup-java@4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-            java-version:'17'
-            distribution:'temurin'
-        - name: Download JUnit and Run Tests
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Download JUnit and Run Tests
         run: |
-            mkdir -p libs
-            curl -L -o libs/junit.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
+          mkdir -p libs
+          curl -L -o libs/junit.jar \
+            https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
 
-            # Compile all Java files
-            javac -cp libs/junit.jar $(find . -name "*.java")
+          javac -cp libs/junit.jar $(find . -name "*.java")
 
-            # Run tests
-            java -jar libs/junit.jar --scan-classpath
+          java -jar libs/junit.jar --scan-classpath
+
