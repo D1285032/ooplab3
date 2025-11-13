@@ -2,9 +2,9 @@ name: junit
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   test:
@@ -17,19 +17,17 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          java-version: "17"
+          distribution: "temurin"
 
       - name: Download JUnit and Run Tests
+        shell: bash
         run: |
           mkdir -p libs
-          curl -L -o libs/junit-platform-console-standalone.jar \
-            https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
+          curl -L -o libs/junit-platform-console-standalone.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
 
-          # 編譯所有 Java
           javac -cp "libs/junit-platform-console-standalone.jar:." *.java
 
-          # 執行測試
           java -jar libs/junit-platform-console-standalone.jar \
             --classpath "." \
             --scan-classpath
