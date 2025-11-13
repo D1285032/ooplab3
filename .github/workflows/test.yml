@@ -2,37 +2,34 @@ name: junit
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Download JUnit Console
-      run: |
-        mkdir -p libs
-        curl -L -o libs/junit-platform-console-standalone.jar \
-        https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
+      - name: Download JUnit and Run Tests
+        run: |
+          mkdir -p libs
+          curl -L -o libs/junit-platform-console-standalone.jar \
+            https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
 
-    - name: Compile Java (src + test)
-      run: |
-        javac -cp "libs/junit-platform-console-standalone.jar" \
-        src/*.java test/*.java
+          # 編譯 src 與 test 的 java
+          javac -cp "libs/junit-platform-console-standalone.jar" \
+            src/*.java test/*.java
 
-    - name: Run tests
-      run: |
-        java -jar libs/junit-platform-console-standalone.jar \
-        --class-path "src:test:libs/junit-platform-console-standalone.jar" \
-        --scan-class-path
+          # 執行所有測試
+          java -jar libs/junit-platform-console-standalone.jar \
+            -cp "libs/junit-platfo
