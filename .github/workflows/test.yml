@@ -20,20 +20,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Download JUnit
+      - name: Download JUnit and Run Tests
         run: |
           mkdir -p libs
-          curl -L -o libs/junit-platform-console-standalone.jar \
-            https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
+          curl -L -o libs/junit-platform-console-standalone.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
+          
+          # 編譯 Java 程式（包含 src 和 test）
+          javac -cp libs/junit-platform-console-standalone.jar -d out $(find src test -name "*.java")
 
-      - name: Compile Java
-        run: |
-          mkdir -p bin
-          javac -cp libs/junit-platform-console-standalone.jar \
-            -d bin $(find src test -name "*.java")
-
-      - name: Run Tests
-        run: |
+          # 執行測試
           java -jar libs/junit-platform-console-standalone.jar \
-            --class-path bin \
-            --scan-class-path
+            --classpath out \
+            --scan-classpath
