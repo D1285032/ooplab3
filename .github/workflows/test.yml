@@ -23,12 +23,13 @@ jobs:
       - name: Download JUnit and Run Tests
         run: |
           mkdir -p libs
-          curl -L -o libs/junit-platform-console-standalone.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
-          
-          # 編譯 Java 程式（包含 src 和 test）
-          javac -cp libs/junit-platform-console-standalone.jar -d out $(find src test -name "*.java")
+          curl -L -o libs/junit-platform-console-standalone.jar \
+            https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.2/junit-platform-console-standalone-1.10.2.jar
+
+          # 編譯所有 Java
+          javac -cp "libs/junit-platform-console-standalone.jar:." *.java
 
           # 執行測試
           java -jar libs/junit-platform-console-standalone.jar \
-            --classpath out \
+            --classpath "." \
             --scan-classpath
